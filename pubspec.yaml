@@ -1,0 +1,33 @@
+name: glamify
+description: A new Flutter project.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.2 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  badges: ^3.1.2
+  intl: ^0.18.0
+  flutter_animate: ^4.5.0
+  flutter_styled_toast: ^2.2.1
+  delightful_toast: ^1.1.0
+  dotted_line: ^3.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/
+    - assets/image/
+  fonts:
+    - family: Segoe
+      fonts:
+        - asset: fonts/Segoe UI.ttf
+        - asset: fonts/Segoe UI Bold.ttf
