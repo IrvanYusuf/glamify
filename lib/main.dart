@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glamify/pages/cart_page.dart';
+import 'package:glamify/pages/checkout_page.dart';
 import 'package:glamify/pages/detail_product_page.dart';
 import 'package:glamify/pages/home_page.dart';
+import 'package:glamify/pages/order_confirmation_page.dart';
 import 'package:glamify/pages/profile_page.dart';
 import 'package:glamify/pages/search_page.dart';
 import 'package:glamify/pages/wallet_page.dart';
@@ -76,9 +78,12 @@ class _MainAppState extends State<MainApp> {
         ),
       ),
       routes: {
+        '/home': (context) => const MainApp(),
         '/detail-product': (context) => const DetailProductPage(),
         '/search': (context) => const SearchPage(),
         '/cart': (context) => const CartPage(),
+        '/checkout': (context) => const CheckoutPage(),
+        "/order-confirmation": (context) => const OrderConfirmationPage(),
       },
     );
   }
