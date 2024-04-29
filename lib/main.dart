@@ -76,7 +76,10 @@ class _MainAppState extends State<MainApp> {
         ),
       ),
       routes: {
-        '/detail-product': (context) => const DetailProductPage(),
+        '/home': (context) => const MainApp(),
+        '/detail-product': (context) => DetailProductPage(
+              id: 1,
+            ),
         '/search': (context) => const SearchPage(),
         '/cart': (context) => const CartPage(),
       },
