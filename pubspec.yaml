@@ -26,6 +26,7 @@ flutter:
   assets:
     - assets/icon/
     - assets/image/
+    - assets/animation/
   fonts:
     - family: Segoe
       fonts:

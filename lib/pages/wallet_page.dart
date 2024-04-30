@@ -54,7 +54,7 @@ class WalletPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
         boxShadow: [
-          const BoxShadow(
+          BoxShadow(
             color: Color.fromARGB(20, 0, 0, 0),
             blurRadius: 10,
             offset: Offset(0, 4),
@@ -234,7 +234,7 @@ class WalletPage extends StatelessWidget {
   Widget _cardWalletContainer(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.5,
+      padding: EdgeInsets.symmetric(vertical: 20),
       decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -264,6 +264,14 @@ class WalletPage extends StatelessWidget {
                     fontFamily: "Segoe",
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/cart");
+                  },
+                  icon: const ImageIcon(
+                    AssetImage("assets/icon/cart-icon.png"),
                   ),
                 ),
                 Container(
