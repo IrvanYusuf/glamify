@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glamify/pages/detail_product_page.dart';
+import 'package:glamify/pages/wallet_page.dart';
+import 'package:glamify/utils/custom_money_formatter.dart';
 
 class CardProduk extends StatefulWidget {
   const CardProduk({super.key});
@@ -12,56 +14,68 @@ class CardProduk extends StatefulWidget {
 class _CardProdukState extends State<CardProduk> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailProductPage(
-                            id: 1,
-                          )),
-                );
-              },
-              child: Column(
-                children: [
-                  Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage("assets/image/shoes.png"),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailProductPage(
+              id: 1,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        child: Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 150,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.vertical(
+                        top: Radius.circular(10)),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        "assets/image/shoes.png",
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(left: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Nama Produk",
-                          style: TextStyle(
-                              fontFamily: 'segoe',
-                              fontSize: 16,
-                              color: Color(0xff323031)),
-                        ),
-                        const Text(
-                          "Rp. 150.00",
-                          style: TextStyle(
-                              fontFamily: 'segoe',
-                              fontSize: 14,
-                              color: Color(0xff323031)),
-                        )
-                      ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 6,
                     ),
-                  )
-                ],
-              )),
-        ],
+                    Text(
+                      "Nama Produk",
+                      style: TextStyle(
+                          fontFamily: 'Segoe',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Color(0xff323031)),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      customMoneyFormatter(150000).toString(),
+                      style: TextStyle(
+                        color: Color(0xff323031),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

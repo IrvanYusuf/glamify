@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:glamify/components/card_detailproduk.dart';
-import 'package:glamify/pages/home_page.dart';
+import 'package:glamify/utils/custom_money_formatter.dart';
+import 'package:glamify/utils/toast.dart';
 
 class DetailProductPage extends StatelessWidget {
   final int id;
-  DetailProductPage({
+  const DetailProductPage({
     Key? key,
     required this.id,
   }) : super(key: key);
@@ -30,7 +31,7 @@ class DetailProductPage extends StatelessWidget {
                           const SizedBox(
                             height: 32,
                           ),
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +39,7 @@ class DetailProductPage extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       "Sepatu Pria DadShoes",
                                       style: TextStyle(
                                         fontSize: 20.0,
@@ -47,16 +48,28 @@ class DetailProductPage extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 8.0,
+                                    const SizedBox(
+                                      height: 8,
                                     ),
                                     Text(
+                                      customMoneyFormatter(150000).toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff333A73),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 8.0,
+                                    ),
+                                    const Text(
                                       "simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an",
                                       style: TextStyle(
                                         fontSize: 14.0,
                                         color: Colors.black45,
                                         fontFamily: 'segoe',
                                       ),
+                                      textAlign: TextAlign.justify,
                                     ),
                                     SizedBox(
                                       height: 32,
@@ -75,17 +88,18 @@ class DetailProductPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: GridView.count(
                               shrinkWrap: true,
+                              primary: false,
                               crossAxisCount: 2,
                               mainAxisSpacing: 20,
                               crossAxisSpacing: 20,
-                              children: [
+                              children: const [
                                 CardProduk(),
                                 CardProduk(),
                                 CardProduk(),
@@ -107,26 +121,57 @@ class DetailProductPage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    toast(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff333A73),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    "Masukkan Keranjang",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            )
           ],
         ),
         Positioned(
-          top: 10,
-          left: 10,
+          top: 70,
+          left: 20,
           child: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, "/home");
+              Navigator.pop(context);
             },
             child: Container(
-              color: Colors.white,
-              height: 30,
-              width: 30,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Image.asset(
                 "assets/icon/arrow-left.png",
                 width: 25,
               ),
             ),
           ),
-        )
+        ),
       ]),
     );
   }
