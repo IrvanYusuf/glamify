@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:glamify/pages/main_page.dart';
 import 'package:glamify/pages/register_page.dart';

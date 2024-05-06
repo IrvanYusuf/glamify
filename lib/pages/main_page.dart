@@ -3,6 +3,7 @@ import 'package:glamify/pages/cart_page.dart';
 import 'package:glamify/pages/checkout_page.dart';
 import 'package:glamify/pages/detail_product_page.dart';
 import 'package:glamify/pages/home_page.dart';
+import 'package:glamify/pages/notification_page.dart';
 import 'package:glamify/pages/order_confirmation_page.dart';
 import 'package:glamify/pages/profile_page.dart';
 import 'package:glamify/pages/search_page.dart';
@@ -75,7 +76,8 @@ class _MainPageState extends State<MainPage> {
       ),
       routes: {
         '/home': (context) => const MainPage(),
-        '/detail-product': (context) => DetailProductPage(
+        '/notification': (context) => const NotificationPage(),
+        '/detail-product': (context) => const DetailProductPage(
               id: 8,
             ),
         '/search': (context) => const SearchPage(),

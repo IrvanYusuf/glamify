@@ -136,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        (name != "Dark Mode"
+        (name != "Mode Gelap"
             ? Transform.rotate(
                 angle: 180 * pi / 180,
                 child: IconButton(

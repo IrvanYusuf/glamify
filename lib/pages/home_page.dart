@@ -47,7 +47,9 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/notification");
+                      },
                       icon: Image.asset(
                         "assets/icon/bell-icon.png",
                         height: 25.0,
@@ -179,31 +181,28 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView(
+              child: SingleChildScrollView(
+                  child: GridView.count(
+                primary: false,
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
                 children: [
-                  GridView.count(
-                    primary: false,
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    children: [
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                    ],
-                  )
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
+                  CardProduk(),
                 ],
-              ),
+              )),
             ),
           )
         ],

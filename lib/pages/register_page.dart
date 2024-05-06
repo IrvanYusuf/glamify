@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glamify/components/textfield_custom.dart';
 import 'package:glamify/pages/login_page.dart';
-import 'package:glamify/pages/main_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
