@@ -79,10 +79,10 @@ class _MainAppState extends State<MainApp> {
       ),
       routes: {
         '/home': (context) => const MainApp(),
-        '/detail-product': (context) => DetailProductPage(
-              id: 8,
-            ),
-        '/search': (context) => const SearchPage(),
+        // '/detail-product': (context) => DetailProductPage(
+        //       id: 8,
+        //     ),
+        // '/search': (context) => const SearchPage(),
         '/cart': (context) => const CartPage(),
         '/checkout': (context) => const CheckoutPage(),
         "/order-confirmation": (context) => const OrderConfirmationPage(),
