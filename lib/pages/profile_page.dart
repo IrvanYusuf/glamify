@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -12,23 +12,23 @@ class _ProfilePageState extends State<ProfilePage> {
   final List<Map> profileMenuItems = [
     {
       "icon": "assets/icon/account.png",
-      "name": "My Profile",
+      "name": "Profil Saya",
     },
     {
       "icon": "assets/icon/transaction.png",
-      "name": "Transaction History",
+      "name": "Riwayat Transaksi",
     },
     {
       "icon": "assets/icon/moon.png",
-      "name": "Dark Mode",
+      "name": "Mode Gelap",
     },
     {
       "icon": "assets/icon/setting.png",
-      "name": "Settings",
+      "name": "Pengaturan",
     },
     {
       "icon": "assets/icon/log-out.png",
-      "name": "Log Out",
+      "name": "Keluar",
     },
   ];
 
@@ -136,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ],
         ),
-        (name != "Dark Mode"
+        (name != "Mode Gelap"
             ? Transform.rotate(
                 angle: 180 * pi / 180,
                 child: IconButton(

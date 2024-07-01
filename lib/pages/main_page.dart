@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:glamify/pages/login_page.dart';
+import 'package:glamify/pages/cart_page.dart';
+import 'package:glamify/pages/checkout_page.dart';
+import 'package:glamify/pages/detail_product_page.dart';
+import 'package:glamify/pages/home_page.dart';
+import 'package:glamify/pages/notification_page.dart';
+import 'package:glamify/pages/order_confirmation_page.dart';
+import 'package:glamify/pages/profile_page.dart';
+import 'package:glamify/pages/search_page.dart';
+import 'package:glamify/pages/wallet_page.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MainAppState extends State<MainApp> {
+class _MainPageState extends State<MainPage> {
+  int _selectedIndex = 0;
+
+  void _onTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  List<Widget> pages = [
+    HomePage(),
+    WalletPage(),
+    ProfilePage(),
+  ];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,8 +75,9 @@ class _MainAppState extends State<MainApp> {
         ),
       ),
       routes: {
-        '/home': (context) => const MainApp(),
-        '/detail-product': (context) => DetailProductPage(
+        '/home': (context) => const MainPage(),
+        '/notification': (context) => const NotificationPage(),
+        '/detail-product': (context) => const DetailProductPage(
               id: 8,
             ),
         '/search': (context) => const SearchPage(),

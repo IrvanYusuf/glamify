@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:glamify/components/card_detailproduk.dart';
-import 'package:glamify/models/ProductModel.dart';
-import 'package:glamify/providers/ProductProvider.dart';
+import 'package:glamify/pages/detail_product_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,22 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ProductProvider productProvider = ProductProvider();
-  late Future<List<ProductModel>> _fetchProduct;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchProduct = productProvider.fetchProducts();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -43,7 +33,9 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/notification");
+                      },
                       icon: Image.asset(
                         "assets/icon/bell-icon.png",
                         height: 25.0,
@@ -51,21 +43,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                     badges.Badge(
                       position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                      badgeContent: Text("4"),
+                      badgeContent: const Text(
+                        "4",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/cart");
+                        },
                         icon: Image.asset(
                           "assets/icon/cart-icon.png",
                           height: 25.0,
                         ),
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        'assets/image/user.png',
-                        width: 30,
-                        height: 30,
                       ),
                     ),
                   ],
@@ -73,31 +62,45 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          const SizedBox(
+            height: 16,
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
                 const Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: 'search',
-                      border: InputBorder.none,
-                      fillColor: Color(0xFFF2F2F2),
-                      filled: true,
-                    ),
+                        labelText: 'search',
+                        border: InputBorder.none,
+                        fillColor: Color(0xFFF2F2F2),
+                        filled: true),
                   ),
                 ),
                 IconButton(
                   onPressed: () {
+                    //
                     Navigator.pushNamed(context, '/search');
                   },
-                  icon: Image.asset(
-                    "assets/icon/search.png",
-                    height: 25.0,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xfff2f2f2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Image.asset(
+                      "assets/icon/search.png",
+                      width: 30,
+                    ),
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(
+            height: 24,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -105,7 +108,9 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Categories'),
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -114,114 +119,109 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () {},
                         child: const Text('All'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color(0xFFF2F2F2),
-                          backgroundColor: const Color(0xff333A73),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color(0xFFF2F2F2),
+                            backgroundColor: const Color(0xff333A73),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       ElevatedButton(
                         onPressed: () {},
                         child: const Text('Clothes'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                          backgroundColor: const Color(0xFFF2F2F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
+                            backgroundColor: const Color(0xFFF2F2F2),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       ElevatedButton(
                         onPressed: () {},
                         child: const Text('Electronics'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                          backgroundColor: const Color(0xFFF2F2F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
+                            backgroundColor: const Color(0xFFF2F2F2),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       ElevatedButton(
                         onPressed: () {},
                         child: const Text('Furniture'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                          backgroundColor: const Color(0xFFF2F2F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
+                            backgroundColor: const Color(0xFFF2F2F2),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       ElevatedButton(
                         onPressed: () {},
                         child: const Text('Shoes'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                          backgroundColor: const Color(0xFFF2F2F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
+                            backgroundColor: const Color(0xFFF2F2F2),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                       ElevatedButton(
                         onPressed: () {},
-                        child: const Text('Miscellaneous'),
+                        child: const Text('Micellaneous'),
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                          backgroundColor: const Color(0xFFF2F2F2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
+                            backgroundColor: const Color(0xFFF2F2F2),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(
+                        width: 16,
+                      ),
                     ],
                   ),
                 )
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: 32,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: FutureBuilder<List<ProductModel>>(
-                future: _fetchProduct,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('No products found'),
-                    );
-                  } else {
-                    return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 20,
-                      ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final product = snapshot.data![index];
-                        return CardProduk(product: product);
-                      },
-                    );
-                  }
-                },
+              child: ListView(
+                children: [
+                  GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                    children: [
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                      CardProduk(),
+                    ],
+                  )
+                ],
               ),
             ),
           ),

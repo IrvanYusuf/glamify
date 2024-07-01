@@ -19,7 +19,7 @@ class WalletPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      "Transaction",
+                      "Riwayat Transaksi",
                       style: TextStyle(
                         fontSize: 18,
                         color: Color(0xff1e1e1e),
@@ -71,7 +71,7 @@ class WalletPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Product Name",
+                    "Nama Produk",
                     style: TextStyle(
                       color: Color(0xff8E8E8E),
                       fontWeight: FontWeight.w600,
@@ -97,7 +97,7 @@ class WalletPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Price",
+                    "Harga",
                     style: TextStyle(
                       color: Color(0xff8E8E8E),
                       fontWeight: FontWeight.w600,
@@ -151,7 +151,7 @@ class WalletPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Order Date",
+                    "Tanggal Order",
                     style: TextStyle(
                       color: Color(0xff8E8E8E),
                       fontWeight: FontWeight.w600,
@@ -161,7 +161,7 @@ class WalletPage extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    "22 June 2024",
+                    "22 Juni 2024",
                     style: TextStyle(
                       fontSize: 16,
                       color: Color(0xff323031),
@@ -233,7 +233,7 @@ class WalletPage extends StatelessWidget {
 
   Widget _cardWalletContainer(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      // width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(vertical: 20),
       decoration: const BoxDecoration(
         boxShadow: [
@@ -255,8 +255,20 @@ class WalletPage extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    image: const DecorationImage(
+                      image: AssetImage("assets/image/user.png"),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
                 const Text(
                   "Hallo, Irvan",
                   style: TextStyle(
@@ -264,24 +276,6 @@ class WalletPage extends StatelessWidget {
                     fontFamily: "Segoe",
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/cart");
-                  },
-                  icon: const ImageIcon(
-                    AssetImage("assets/icon/cart-icon.png"),
-                  ),
-                ),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    image: const DecorationImage(
-                      image: AssetImage("assets/image/user.png"),
-                    ),
                   ),
                 ),
               ],

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:glamify/components/card_detailproduk.dart';
-import 'package:glamify/models/ProductModel.dart';
-import 'package:glamify/providers/ProductProvider.dart';
+import 'package:glamify/utils/custom_money_formatter.dart';
+import 'package:glamify/utils/toast.dart';
 
 class DetailProductPage extends StatelessWidget {
   final int id;
-  final String category;
-  DetailProductPage({Key? key, required this.id, required this.category})
-      : super(key: key);
-
-  final ProductProvider productProvider = ProductProvider();
+  const DetailProductPage({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,110 +30,160 @@ class DetailProductPage extends StatelessWidget {
             children: [
               ListView(
                 children: [
-                  Image.network(
-                    product.image ?? "https://via.placeholder.com/150",
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  const SizedBox(height: 32),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.title ?? "Nama Produk",
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                            fontFamily: 'segoe',
-                            fontWeight: FontWeight.bold,
+                  if (id == 1)
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            "assets/image/shoes.png",
+                            width: 800.0,
+                            fit: BoxFit.fitWidth,
                           ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          product.description ??
-                              "Deskripsi produk tidak tersedia.",
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.black45,
-                            fontFamily: 'segoe',
+                          const SizedBox(
+                            height: 32,
                           ),
-                        ),
-                        const SizedBox(height: 32),
-                        const Text(
-                          "Produk serupa lainnya",
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                            fontFamily: 'segoe',
-                            fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Sepatu Pria DadShoes",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                        fontFamily: 'segoe',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      customMoneyFormatter(150000).toString(),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff333A73),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 8.0,
+                                    ),
+                                    const Text(
+                                      "simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an",
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.black45,
+                                        fontFamily: 'segoe',
+                                      ),
+                                      textAlign: TextAlign.justify,
+                                    ),
+                                    SizedBox(
+                                      height: 32,
+                                    ),
+                                    Text(
+                                      "Produk serupa lainnya",
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                        fontFamily: 'segoe',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        FutureBuilder<List<ProductModel>>(
-                          future:
-                              productProvider.fetchSimilarProducts(category),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('Error: ${snapshot.error}'));
-                            } else if (!snapshot.hasData ||
-                                snapshot.data!.isEmpty) {
-                              return const Center(
-                                  child: Text('No similar products found'));
-                            }
-
-                            final similarProducts = snapshot.data!;
-                            print(similarProducts);
-                            return GridView.builder(
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: GridView.count(
                               shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 20,
-                              ),
-                              itemCount: similarProducts.length,
-                              itemBuilder: (context, index) {
-                                return CardProduk(
-                                    product: similarProducts[index]);
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+                              primary: false,
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 20,
+                              children: const [
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                                CardProduk(),
+                              ],
+                            ),
+                          )
+                        ])
+                  else
+                    const Column(children: [Text('Halaman Detail didukung')]),
                 ],
               ),
-              Positioned(
-                top: 10,
-                left: 10,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    toast(context);
                   },
-                  child: Container(
-                    color: Colors.white,
-                    height: 30,
-                    width: 30,
-                    child: Image.asset(
-                      "assets/icon/arrow-left.png",
-                      width: 25,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff333A73),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text(
+                    "Masukkan Keranjang",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              )
-            ],
-          );
-        },
-      ),
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            )
+          ],
+        ),
+        Positioned(
+          top: 70,
+          left: 20,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Image.asset(
+                "assets/icon/arrow-left.png",
+                width: 25,
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
