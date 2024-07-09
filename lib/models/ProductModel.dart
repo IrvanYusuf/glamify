@@ -15,7 +15,7 @@ class ProductModel {
       this.category,
       this.image,
       this.rating});
-      
+
   //untuk buat objek 'ProductModel' dari json
   ProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

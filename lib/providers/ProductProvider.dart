@@ -69,4 +69,18 @@ class ProductProvider {
       throw Exception('Failed to delete product');
     }
   }
+
+  Future<List<dynamic>> getCategories() async {
+    final response = await http.get(Uri.parse("$_baseUrl/categories"));
+    try {
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+        print(data);
+        return data;
+      }
+      throw Exception('Failed to get category');
+    } catch (e) {
+      throw Exception('error message: ${e.toString()}');
+    }
+  }
 }

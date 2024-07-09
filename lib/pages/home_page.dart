@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:glamify/components/card_detailproduk.dart';
 import 'package:glamify/pages/detail_product_page.dart';
+import 'package:glamify/providers/ProductProvider.dart';
+import 'package:glamify/models/ProductModel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,10 +13,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ProductProvider productProvider = ProductProvider();
+  late Future<List<ProductModel>> fetchProducts;
+  late Future<List<dynamic>> getDataCategories;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchProducts = productProvider.fetchProducts();
+    getDataCategories = productProvider.getCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -69,8 +83,9 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: TextField(
+                    onSubmitted: (value) {},
                     decoration: InputDecoration(
                         labelText: 'search',
                         border: InputBorder.none,
@@ -83,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                     //
                     Navigator.pushNamed(context, '/search');
                   },
-                  child: Container(
+                  icon: Container(
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
@@ -111,84 +126,38 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('All'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color(0xFFF2F2F2),
-                            backgroundColor: const Color(0xff333A73),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Clothes'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                            backgroundColor: const Color(0xFFF2F2F2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Electronics'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                            backgroundColor: const Color(0xFFF2F2F2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Furniture'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                            backgroundColor: const Color(0xFFF2F2F2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Shoes'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                            backgroundColor: const Color(0xFFF2F2F2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Micellaneous'),
-                        style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color.fromARGB(255, 8, 8, 8),
-                            backgroundColor: const Color(0xFFF2F2F2),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                    ],
-                  ),
+                FutureBuilder(
+                  future: getDataCategories,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      final categories = snapshot.data;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(categories!.length, (index) {
+                            return Container(
+                              margin: EdgeInsets.only(right: 16),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(categories[index]),
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: const Color(0xFFF2F2F2),
+                                    backgroundColor: const Color(0xff333A73),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8))),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    }
+                  },
                 )
               ],
             ),
@@ -198,32 +167,30 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView(
-                children: [
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 20,
-                    crossAxisSpacing: 20,
-                    children: [
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                      CardProduk(),
-                    ],
-                  )
-                ],
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: FutureBuilder(
+                    future: fetchProducts,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return GridView.builder(
+                          itemCount: snapshot.data!.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                          ),
+                          itemBuilder: (context, index) {
+                            final product = snapshot.data![index];
+                            return CardProduk(product: product);
+                          },
+                        );
+                      }
+                    })),
           ),
         ],
       ),

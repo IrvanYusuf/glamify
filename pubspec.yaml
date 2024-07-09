@@ -16,6 +16,7 @@ dependencies:
   delightful_toast: ^1.1.0
   dotted_line: ^3.2.2
   http: ^1.2.1
+  flutter_pannable_rating_bar: ^2.7.2+1
 
 dev_dependencies:
   flutter_test:

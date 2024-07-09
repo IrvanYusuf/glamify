@@ -17,56 +17,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: pages[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          onTap: _onTap,
-          elevation: 10,
-          type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: const TextStyle(
-            color: Color(0xff122620),
-            fontWeight: FontWeight.bold,
-            fontFamily: "Segoe",
-          ),
-          unselectedLabelStyle: const TextStyle(
-            color: Color(0xff122620),
-            fontWeight: FontWeight.bold,
-            fontFamily: "Segoe",
-          ),
-          useLegacyColorScheme: false,
-          items: [
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/icon/${_selectedIndex == 0 ? "home-active" : "home"}.png",
-                width: 28,
-              ),
-              label: _selectedIndex == 0 ? "Home" : "",
-            ),
-            BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icon/${_selectedIndex == 1 ? "wallet-active" : "wallet"}.png",
-                  width: 28,
-                ),
-                label: _selectedIndex == 1 ? "Wallet" : ""),
-            BottomNavigationBarItem(
-                icon: Image.asset(
-                  "assets/icon/${_selectedIndex == 2 ? "profile-active" : "profile"}.png",
-                  width: 28,
-                ),
-                label: _selectedIndex == 2 ? "Profile" : ""),
-          ],
-        ),
-      ),
-      routes: {
-        '/home': (context) => const MainApp(),
-        '/detail-product': (context) => DetailProductPage(
-              id: 8,
-            ),
-        '/search': (context) => const SearchPage(),
-        '/cart': (context) => const CartPage(),
-        '/checkout': (context) => const CheckoutPage(),
-        "/order-confirmation": (context) => const OrderConfirmationPage(),
-      },
+      home: LoginPage(),
     );
   }
 }
