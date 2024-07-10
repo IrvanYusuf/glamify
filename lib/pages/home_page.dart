@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:glamify/components/card_detailproduk.dart';
+import 'package:glamify/provider/auth_provider_hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,6 +31,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProviderHive authProviderHive = Provider.of(context, listen: true);
+    print("auth credential: ${authProviderHive.authCredential}");
     return SafeArea(
       child: Column(
         children: [

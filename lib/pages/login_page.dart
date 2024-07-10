@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:glamify/components/textfield_custom.dart';
 import 'package:glamify/pages/main_page.dart';
 import 'package:glamify/pages/register_page.dart';
+import 'package:glamify/services/auth/auth_services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  final _formState = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,69 +48,62 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 16,
             ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Email",
-                  style: TextStyle(
-                    fontFamily: "Segoe",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17,
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-                    hintText: "abc@gmail.com",
-                    border: OutlineInputBorder(
-                      // borderSide: BorderSide.,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8),
-                      ),
+            Form(
+                key: _formState,
+                child: Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Email",
+                          style: TextStyle(
+                            fontFamily: "Segoe",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        TextFieldCustom(
+                          hintText: "abc@gmail.com",
+                          obscureText: false,
+                          controller: email,
+                          keyboardType: TextInputType.emailAddress,
+                          isConfirmPassword: false,
+                          errorMessage: 'Email tidak boleh kosong',
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Password",
-                  style: TextStyle(
-                    fontFamily: "Segoe",
-                    fontWeight: FontWeight.w500,
-                    fontSize: 17,
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-                    hintText: "******",
-                    border: OutlineInputBorder(
-                      // borderSide: BorderSide.,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8),
-                      ),
+                    const SizedBox(
+                      height: 16,
                     ),
-                  ),
-                ),
-              ],
-            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Password",
+                          style: TextStyle(
+                            fontFamily: "Segoe",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        TextFieldCustom(
+                          hintText: "******",
+                          obscureText: true,
+                          controller: password,
+                          isConfirmPassword: false,
+                          errorMessage: 'Password tidak boleh kosong',
+                        ),
+                      ],
+                    ),
+                  ],
+                )),
             const SizedBox(
               height: 16,
             ),
@@ -117,7 +115,8 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()),
                     );
                   },
                   child: const Text(
@@ -134,11 +133,23 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.only(top: 32),
               width: MediaQuery.of(context).size.width,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder: (context) {
-                    return const MainPage();
-                  }), (route) => false);
+                onPressed: () async {
+                  if (_formState.currentState?.validate() != false) {
+                    final response = await AuthServices()
+                        .signInWithEmailAndPassword(email, password, context);
+                    print(response);
+
+                    if (response == "Success") {
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const MainPage();
+                      }), (route) => false);
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(response),
+                      backgroundColor: Colors.red[700],
+                    ));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xff333A73),
@@ -150,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: const Text(
                   "Masuk",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),

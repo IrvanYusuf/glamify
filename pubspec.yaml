@@ -9,12 +9,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   badges: ^3.1.2
-  intl: ^0.18.0
+  intl: ^0.19.0
   flutter_animate: ^4.5.0
   flutter_styled_toast: ^2.2.1
   delightful_toast: ^1.1.0
   dotted_line: ^3.2.2
+  firebase_core: ^2.30.1
+  firebase_auth: ^4.19.4
+  cloud_firestore: ^4.17.5
+  bcrypt: ^1.1.3
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

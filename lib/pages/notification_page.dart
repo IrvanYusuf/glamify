@@ -26,23 +26,23 @@ class NotificationPage extends StatelessWidget {
           child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           CardNotification(
-            color: Color(0xffffd600)!,
+            color: const Color(0xffffd600)!,
             icon: Icons.star_rounded,
             message: "Beri Rating Untuk Produk Yang Baru Anda Beli",
             time: "8 hari yang lalu",
           ),
           CardNotification(
-            color: Color(0xfff56564)!,
+            color: const Color(0xfff56564)!,
             icon: Icons.padding_rounded,
             message: "Paket Telah Diterima",
             time: "8 hari yang lalu",
           ),
           CardNotification(
-            color: Color(0xff4f50e9)!,
+            color: const Color(0xff4f50e9)!,
             icon: Icons.local_shipping_rounded,
             message: "Paket Sedang Dalam Perjalanan",
             time: "10 hari yang lalu",

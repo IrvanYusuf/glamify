@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:glamify/components/textfield_custom.dart';
 import 'package:glamify/pages/login_page.dart';
+import 'package:glamify/pages/main_page.dart';
+import 'package:glamify/services/auth/auth_services.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,6 +16,14 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController konfirmasiPassword = TextEditingController();
+
+  String? uid;
+
+  final _formState = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,97 +59,119 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(
                     height: 16,
                   ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Username",
-                        style: TextStyle(
-                          fontFamily: "Segoe",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      TextFieldCustom(
-                        hintText: "John doe",
-                        obscureText: false,
-                        keyboardType: TextInputType.text,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Email",
-                        style: TextStyle(
-                          fontFamily: "Segoe",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      TextFieldCustom(
-                        hintText: "abc@gmail.com",
-                        obscureText: false,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Password",
-                        style: TextStyle(
-                          fontFamily: "Segoe",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      TextFieldCustom(
-                        hintText: "******",
-                        obscureText: true,
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Konfirmasi Password",
-                        style: TextStyle(
-                          fontFamily: "Segoe",
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      TextFieldCustom(
-                        hintText: "******",
-                        obscureText: true,
-                      )
-                    ],
-                  ),
+                  Form(
+                      key: _formState,
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Username",
+                                style: TextStyle(
+                                  fontFamily: "Segoe",
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              TextFieldCustom(
+                                hintText: "John doe",
+                                obscureText: false,
+                                keyboardType: TextInputType.text,
+                                controller: username,
+                                errorMessage: "Username tidak boleh kosong",
+                                isConfirmPassword: false,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Email",
+                                style: TextStyle(
+                                  fontFamily: "Segoe",
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              TextFieldCustom(
+                                hintText: "abc@gmail.com",
+                                obscureText: false,
+                                keyboardType: TextInputType.emailAddress,
+                                controller: email,
+                                errorMessage: 'Email tidak boleh kosong',
+                                isConfirmPassword: false,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Password",
+                                style: TextStyle(
+                                  fontFamily: "Segoe",
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              TextFieldCustom(
+                                hintText: "******",
+                                obscureText: true,
+                                controller: password,
+                                errorMessage: 'Password tidak boleh kosong',
+                                isConfirmPassword: false,
+                                suffixIcon: Icon(Icons.remove_red_eye),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Konfirmasi Password",
+                                style: TextStyle(
+                                  fontFamily: "Segoe",
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              TextFieldCustom(
+                                hintText: "******",
+                                obscureText: true,
+                                controller: konfirmasiPassword,
+                                errorMessage:
+                                    'Konfirmasi Password tidak boleh kosong',
+                                isConfirmPassword: true,
+                                originalPasswordController: password,
+                                suffixIcon: Icon(Icons.remove_red_eye),
+                              )
+                            ],
+                          ),
+                        ],
+                      )),
                   const SizedBox(
                     height: 16,
                   ),
@@ -148,7 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()),
+                                builder: (context) => const LoginPage()),
                           );
                         },
                         child: const Text(
@@ -165,11 +201,29 @@ class _RegisterPageState extends State<RegisterPage> {
                     margin: const EdgeInsets.only(top: 32, bottom: 24),
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const LoginPage();
-                        }));
+                      onPressed: () async {
+                        if (_formState.currentState?.validate() != false) {
+                          final Map<String, dynamic> payload = {
+                            "uid": null,
+                            "username": username.text,
+                            "email": email.text,
+                            "password": password.text,
+                            "photo_url": null
+                          };
+                          final response = await AuthServices()
+                              .createUserWithEmailAndPassword(
+                                  email, password, setState, uid, payload);
+                          if (response == "Success") {
+                            Navigator.pushAndRemoveUntil(context,
+                                MaterialPageRoute(builder: (context) {
+                              return const MainPage();
+                            }), (route) => false);
+                          }
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(response),
+                            backgroundColor: Colors.red[700],
+                          ));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xff333A73),
@@ -181,7 +235,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       child: const Text(
                         "Daftar",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                   ),

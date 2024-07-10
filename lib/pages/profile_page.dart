@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:glamify/components/profile_menu_item.dart';
+import 'package:glamify/pages/login_page.dart';
+import 'package:glamify/provider/auth_provider_hive.dart';
 import 'dart:math';
+
+import 'package:glamify/services/auth/auth_services.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,22 +19,18 @@ class _ProfilePageState extends State<ProfilePage> {
     {
       "icon": "assets/icon/account.png",
       "name": "Profil Saya",
+      "onPressed": () {}
     },
     {
       "icon": "assets/icon/transaction.png",
       "name": "Riwayat Transaksi",
+      "onPressed": () {}
     },
-    {
-      "icon": "assets/icon/moon.png",
-      "name": "Mode Gelap",
-    },
+    {"icon": "assets/icon/moon.png", "name": "Mode Gelap", "onPressed": () {}},
     {
       "icon": "assets/icon/setting.png",
       "name": "Pengaturan",
-    },
-    {
-      "icon": "assets/icon/log-out.png",
-      "name": "Keluar",
+      "onPressed": () {}
     },
   ];
 
@@ -42,6 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProviderHive authProviderHive =
+        Provider.of<AuthProviderHive>(context, listen: false);
+
     return SafeArea(
       child: Column(
         children: [
@@ -70,9 +75,48 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 32,
                 ),
                 ...profileMenuItems.map(
-                  (menu) => _profileMenuItem(
-                    menu['icon'],
-                    menu['name'],
+                  (menu) => ProfileMenuItem(
+                    onPressed: menu['onPressed'],
+                    icon: menu['icon'],
+                    name: menu["name"],
+                    isDark: _isDark,
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: GestureDetector(
+                    onTap: () async {
+                      await AuthServices()
+                          .signOut(); // Pastikan signOut sudah selesai
+                      authProviderHive.clearToken();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        (Route<dynamic> route) =>
+                            false, // Hapus semua halaman sebelumnya
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              "assets/icon/log-out.png",
+                              width: 28,
+                            ),
+                            const SizedBox(
+                              width: 24,
+                            ),
+                            Text(
+                              "Keluar",
+                              style: const TextStyle(fontFamily: "Segoe"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -114,48 +158,6 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
-    );
-  }
-
-  Row _profileMenuItem(String icon, String name) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Image.asset(
-              icon,
-              width: 28,
-            ),
-            const SizedBox(
-              width: 24,
-            ),
-            Text(
-              name,
-              style: const TextStyle(fontFamily: "Segoe"),
-            ),
-          ],
-        ),
-        (name != "Mode Gelap"
-            ? Transform.rotate(
-                angle: 180 * pi / 180,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    "assets/icon/arrow-left.png",
-                    width: 22,
-                  ),
-                ),
-              )
-            : Switch.adaptive(
-                value: _isDark,
-                applyCupertinoTheme: true,
-                onChanged: (newValue) {
-                  setState(() {
-                    _isDark = newValue;
-                  });
-                })),
-      ],
     );
   }
 
