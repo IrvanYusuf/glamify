@@ -41,7 +41,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: MediaQuery.of(context).size.height * 0.30,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/image/register.png"),
+                        image: NetworkImage(
+                            "https://i.ibb.co.com/qgps9VB/register.png"),
                       ),
                     ),
                   ),

@@ -17,13 +17,8 @@ dependencies:
   flutter_styled_toast: ^2.2.1
   delightful_toast: ^1.1.0
   dotted_line: ^3.2.2
-  firebase_core: ^2.30.1
-  firebase_auth: ^4.19.4
-  cloud_firestore: ^4.17.5
-  bcrypt: ^1.1.3
-  hive_flutter: ^1.1.0
-  hive: ^2.2.3
-  provider: ^6.1.2
+  http: ^1.2.1
+  flutter_pannable_rating_bar: ^2.7.2+1
 
 dev_dependencies:
   flutter_test:

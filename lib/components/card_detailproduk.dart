@@ -1,77 +1,73 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:glamify/models/ProductModel.dart';
 import 'package:glamify/pages/detail_product_page.dart';
-import 'package:glamify/utils/custom_money_formatter.dart';
 
-class CardProduk extends StatefulWidget {
-  const CardProduk({super.key});
+class CardProduk extends StatelessWidget {
+  final ProductModel product;
+  const CardProduk({Key? key, required this.product}) : super(key: key);
 
-  @override
-  State<CardProduk> createState() => _CardProdukState();
-}
-
-class _CardProdukState extends State<CardProduk> {
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const DetailProductPage(
-              id: 1,
-            ),
-          ),
-        );
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              height: 150,
-              decoration: const BoxDecoration(
-                borderRadius:
-                    BorderRadiusDirectional.vertical(top: Radius.circular(10)),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    "assets/image/shoes.png",
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailProductPage(
+                          id: product.id!,
+                          category: product.category!,
+                        )),
+              );
+            },
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  "Nama Produk",
-                  style: TextStyle(
-                      fontFamily: 'Segoe',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Color(0xff323031)),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  customMoneyFormatter(150000).toString(),
-                  style: TextStyle(
-                    color: Color(0xff323031),
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(product.image!),
+                    ),
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.title ?? "Nama Produk",
+                        style: TextStyle(
+                            fontFamily: 'segoe',
+                            fontSize: 16,
+                            color: Color(0xff323031)),
+                        maxLines: 1,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.star_rate_rounded,
+                              color: Colors.amber[300]),
+                          Text(product.rating!.rate.toString()),
+                        ],
+                      ),
+                      Text(
+                        "\$. ${product.price}",
+                        style: TextStyle(
+                            fontFamily: 'segoe',
+                            fontSize: 14,
+                            color: Color(0xff323031)),
+                      )
+                    ],
+                  ),
+                )
               ],
-            ),
-          )
-        ],
-      ),
+            )),
+      ],
     );
   }
 }

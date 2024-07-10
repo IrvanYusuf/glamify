@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:glamify/components/card_detailproduk.dart';
-import 'package:glamify/provider/auth_provider_hive.dart';
+import 'package:glamify/pages/detail_product_page.dart';
+import 'package:glamify/providers/ProductProvider.dart';
+import 'package:glamify/models/ProductModel.dart';
+import 'package:glamify/providers/auth_provider_hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -13,20 +16,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List dataCategories = [
-    "All",
-    "Clothes",
-    "Eletronics",
-    "Furniture",
-    "Shoes",
-    "Micellaneous",
-  ];
-  String selectedCategory = 'All';
-
-  void setSelectedCategory(String category) {
-    setState(() {
-      selectedCategory = category;
-    });
+  ProductProvider productProvider = ProductProvider();
+  late Future<List<ProductModel>> fetchProducts;
+  late Future<List<dynamic>> getDataCategories;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchProducts = productProvider.fetchProducts();
+    getDataCategories = productProvider.getCategories();
   }
 
   @override
@@ -35,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     print("auth credential: ${authProviderHive.authCredential}");
     return SafeArea(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -44,10 +43,11 @@ class _HomePageState extends State<HomePage> {
                 const Text(
                   "Glamify",
                   style: TextStyle(
-                      fontFamily: 'segoe',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff333A73)),
+                    fontFamily: 'segoe',
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff333A73),
+                  ),
                 ),
                 Row(
                   children: [
@@ -89,31 +89,21 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 50,
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'cari....',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
+                  child: TextField(
+                    onSubmitted: (value) {},
+                    decoration: InputDecoration(
+                        labelText: 'search',
+                        border: InputBorder.none,
                         fillColor: Color(0xFFF2F2F2),
-                        filled: true,
-                      ),
-                    ),
+                        filled: true),
                   ),
                 ),
-                const SizedBox(
-                  width: 16,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/search");
+                IconButton(
+                  onPressed: () {
+                    //
+                    Navigator.pushNamed(context, '/search');
                   },
-                  child: Container(
+                  icon: Container(
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
@@ -137,79 +127,76 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Kategori',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Segoe',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                const Text('Categories'),
                 const SizedBox(
                   height: 16,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: dataCategories.map((category) {
-                      return Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setSelectedCategory(category);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: (selectedCategory == category
-                                ? const Color(0xFFF2F2F2)
-                                : const Color.fromARGB(255, 8, 8, 8)),
-                            backgroundColor: (selectedCategory == category
-                                ? const Color(0xff333A73)
-                                : const Color(0xFFF2F2F2)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(category),
+                FutureBuilder(
+                  future: getDataCategories,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      final categories = snapshot.data;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: List.generate(categories!.length, (index) {
+                            return Container(
+                              margin: EdgeInsets.only(right: 16),
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(categories[index]),
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: const Color(0xFFF2F2F2),
+                                    backgroundColor: const Color(0xff333A73),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8))),
+                              ),
+                            );
+                          }),
                         ),
                       );
-                    }).toList(),
-                  ),
-                ),
+                    }
+                  },
+                )
               ],
             ),
           ),
-          const SizedBox(
-            height: 24,
+          SizedBox(
+            height: 32,
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SingleChildScrollView(
-                  child: GridView.count(
-                primary: false,
-                shrinkWrap: true,
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                children: [
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                  CardProduk(),
-                ],
-              )),
-            ),
-          )
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: FutureBuilder(
+                    future: fetchProducts,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return GridView.builder(
+                          itemCount: snapshot.data!.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                          ),
+                          itemBuilder: (context, index) {
+                            final product = snapshot.data![index];
+                            return CardProduk(product: product);
+                          },
+                        );
+                      }
+                    })),
+          ),
         ],
       ),
     );
