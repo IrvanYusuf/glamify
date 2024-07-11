@@ -1,9 +1,7 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:glamify/provider/auth_provider_hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:glamify/providers/auth_provider_hive.dart';
 
 class AuthServices {
   bool _isLoading = false;
@@ -93,6 +91,8 @@ class AuthServices {
         return 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
         return 'Wrong password provided for that user.';
+      } else if (e.code == 'invalid-credential') {
+        return 'Akun tidak terdaftar';
       }
       return res;
     }

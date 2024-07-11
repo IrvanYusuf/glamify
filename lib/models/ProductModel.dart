@@ -1,7 +1,7 @@
 class ProductModel {
   int? id;
   String? title;
-  double? price;
+  dynamic price;
   String? description;
   String? category;
   String? image;
@@ -16,7 +16,6 @@ class ProductModel {
       this.image,
       this.rating});
 
-  //untuk buat objek 'ProductModel' dari json
   ProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
@@ -44,7 +43,7 @@ class ProductModel {
 }
 
 class Rating {
-  double? rate;
+  dynamic rate;
   int? count;
 
   Rating({this.rate, this.count});

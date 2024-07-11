@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:glamify/components/card_detailproduk.dart';
-import 'package:glamify/pages/detail_product_page.dart';
 import 'package:glamify/providers/ProductProvider.dart';
 import 'package:glamify/models/ProductModel.dart';
-import 'package:glamify/providers/auth_provider_hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:glamify/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,18 +17,31 @@ class _HomePageState extends State<HomePage> {
   ProductProvider productProvider = ProductProvider();
   late Future<List<ProductModel>> fetchProducts;
   late Future<List<dynamic>> getDataCategories;
+
+  String currentCategory = 'All';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchProducts = productProvider.fetchProducts();
+    fetchProductsByCategory();
     getDataCategories = productProvider.getCategories();
+  }
+
+  void fetchProductsByCategory() {
+    setState(() {
+      if (currentCategory == 'All') {
+        fetchProducts = productProvider.fetchProducts();
+      } else {
+        fetchProducts = productProvider.fetchSimilarProducts(currentCategory);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    AuthProviderHive authProviderHive = Provider.of(context, listen: true);
-    print("auth credential: ${authProviderHive.authCredential}");
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: true);
+    print(cartProvider.cartItems.length);
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,8 +73,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     badges.Badge(
                       position: badges.BadgePosition.topEnd(top: 0, end: 0),
-                      badgeContent: const Text(
-                        "4",
+                      badgeContent: Text(
+                        cartProvider.cartItems.length.toString(),
                         style: TextStyle(color: Colors.white),
                       ),
                       child: IconButton(
@@ -127,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Categories'),
+                Text("Categories ${currentCategory}"),
                 const SizedBox(
                   height: 16,
                 ),
@@ -135,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                   future: getDataCategories,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     } else {
@@ -146,16 +157,27 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: List.generate(categories!.length, (index) {
                             return Container(
-                              margin: EdgeInsets.only(right: 16),
+                              margin: const EdgeInsets.only(right: 16),
                               child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(categories[index]),
+                                onPressed: () {
+                                  setState(() {
+                                    currentCategory = categories[index];
+                                    fetchProductsByCategory();
+                                  });
+                                },
                                 style: ElevatedButton.styleFrom(
-                                    foregroundColor: const Color(0xFFF2F2F2),
-                                    backgroundColor: const Color(0xff333A73),
+                                    foregroundColor:
+                                        currentCategory == categories[index]
+                                            ? Color(0xFFF2F2F2)
+                                            : Color(0xff333A73),
+                                    backgroundColor:
+                                        currentCategory == categories[index]
+                                            ? Color(0xff333A73)
+                                            : Color(0xFFF2F2F2),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(8))),
+                                child: Text(categories[index]),
                               ),
                             );
                           }),
@@ -174,28 +196,34 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: FutureBuilder(
-                    future: fetchProducts,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return GridView.builder(
-                          itemCount: snapshot.data!.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 20,
-                            crossAxisSpacing: 20,
-                          ),
-                          itemBuilder: (context, index) {
-                            final product = snapshot.data![index];
-                            return CardProduk(product: product);
-                          },
-                        );
-                      }
-                    })),
+                  future: fetchProducts,
+                  builder: (context, snapshot) {
+                    print("snapshot: ${snapshot.data}");
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasData) {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 20,
+                        ),
+                        itemBuilder: (context, index) {
+                          final product = snapshot.data![index];
+                          return CardProduk(product: product);
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Text("no data"),
+                      );
+                    }
+                  },
+                )),
           ),
         ],
       ),

@@ -9,24 +9,24 @@ class CardProduk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DetailProductPage(
-                          id: product.id!,
-                          category: product.category!,
-                        )),
-              );
-            },
-            child: Column(
-              children: [
-                Container(
-                  height: 150,
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailProductPage(
+                      id: product.id!,
+                      category: product.category!,
+                    )),
+          );
+        },
+        child: Card(
+          elevation: 2,
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
@@ -34,7 +34,9 @@ class CardProduk extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
+              ),
+              Expanded(
+                child: Container(
                   margin: EdgeInsets.only(left: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,10 +66,10 @@ class CardProduk extends StatelessWidget {
                       )
                     ],
                   ),
-                )
-              ],
-            )),
-      ],
-    );
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }

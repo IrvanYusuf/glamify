@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:glamify/models/cart_model.dart';
+import 'package:glamify/providers/cart_provider.dart';
+import 'package:glamify/services/auth/order_services.dart';
 import 'dart:math';
 
 import 'package:glamify/utils/custom_money_formatter.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({super.key});
+  final String idUser;
+  const CheckoutPage({super.key, required this.idUser});
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -12,10 +16,29 @@ class CheckoutPage extends StatefulWidget {
 
 class _CheckoutPageState extends State<CheckoutPage> {
   String? _selectedShipping = "Standar";
-  double _selectedPriceShipping = 25000;
+  double _selectedPriceShipping = 10.0;
   String? _selectedPayment = "Tunai";
+  double totalAmount = 0.0;
+
+  late CartProvider cartProvider;
+  late Future<List<CartModel>> fetchCarts;
+
+  @override
+  void initState() {
+    super.initState();
+    cartProvider = CartProvider();
+    fetchCarts = cartProvider.getCart(widget.idUser);
+    fetchCarts.then((cartItems) {
+      setState(() {
+        totalAmount =
+            cartItems.fold(0.0, (sum, item) => sum + (item.total_price ?? 0));
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final grandTotal = totalAmount + _selectedPriceShipping;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -61,21 +84,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       color: Color.fromARGB(164, 240, 240, 240),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Rincian Pesanan"),
-                          _orderDetailsItems("Total Harga", "3000000"),
+                          _orderDetailsItems(
+                              "Total Harga", customMoneyFormatter(totalAmount)),
                           _orderDetailsItems(
                               "Jenis Pembayaran", _selectedPayment),
                           _orderDetailsItems(
                               "Jenis Pengiriman", _selectedShipping),
-                          _orderDetailsItems(
-                            "Biaya Pengiriman",
-                            _selectedPriceShipping.toString(),
-                          ),
-                          _orderDetailsItems("Total Pembayaran", "3025000"),
+                          _orderDetailsItems("Biaya Pengiriman",
+                              customMoneyFormatter(_selectedPriceShipping)),
+                          _orderDetailsItems("Total Pembayaran",
+                              customMoneyFormatter(grandTotal)),
                         ],
                       ),
                     ),
@@ -106,11 +129,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   TextStyle(fontWeight: FontWeight.bold, fontFamily: "Segoe"),
             ),
           Text(
-            (name == "Jenis Pengiriman" || name == "Jenis Pembayaran")
-                ? value ?? ""
-                : customMoneyFormatter(
-                    double.parse(value ?? "0"),
-                  ),
+            value ?? "",
             style: TextStyle(
                 fontSize: (name == "Total Pembayaran") ? 16 : 14,
                 fontWeight: FontWeight.bold,
@@ -128,8 +147,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
-        onPressed: () {
-          Navigator.pushNamed(context, "/order-confirmation");
+        onPressed: () async {
+          try {
+            final cartItems = await fetchCarts;
+            final shippingType = _selectedShipping!;
+            final shippingCost = _selectedPriceShipping;
+            final orderServices = OrderServices();
+
+            final order = await orderServices.createOrder(
+              widget.idUser,
+              cartItems,
+              totalAmount,
+              shippingCost,
+              shippingType,
+            );
+
+            // if (order) {
+            //   await cartProvider.clearCart(widget.idUser);
+            // }
+
+            Navigator.pushNamed(context, "/order-confirmation");
+          } catch (e) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Error'),
+                content: Text('Failed to create order: ${e.toString()}'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xff333A73),
@@ -140,7 +192,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ),
         child: const Text(
           "Buat Pesanan",
-          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Segoe"),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: "Segoe",
+              color: Colors.white),
         ),
       ),
     );
@@ -165,9 +220,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
             const SizedBox(
               height: 24,
             ),
-            _radioButtonShipping("Standar", "12 - 15 April", "Standar", 25000),
-            _radioButtonShipping("Medium", "07 - 10 April", "Medium", 30000),
-            _radioButtonShipping("Express", "1 hari", "Express", 38000),
+            _radioButtonShipping("Standar", "12 - 15 April", "Standar", 10),
+            _radioButtonShipping("Medium", "07 - 10 April", "Medium", 15),
+            _radioButtonShipping("Express", "1 hari", "Express", 20),
           ],
         ),
       ),
@@ -207,9 +262,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         color: Color.fromARGB(164, 240, 240, 240),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(
-          20,
-        ),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -217,16 +270,35 @@ class _CheckoutPageState extends State<CheckoutPage> {
             const SizedBox(
               height: 8,
             ),
-            _cartProductBuy(context),
-            _cartProductBuy(context),
-            _cartProductBuy(context),
+            FutureBuilder(
+              future: fetchCarts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  return Column(
+                      children: List.generate(
+                    snapshot.data!.length,
+                    (index) {
+                      return _cartProductBuy(context, snapshot.data![index]);
+                    },
+                  ));
+                } else {
+                  return Center(child: Text('No Data'));
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _cartProductBuy(BuildContext context) {
+  Widget _cartProductBuy(BuildContext context, CartModel data) {
     return Container(
       decoration: const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0)),
       child: Card(
@@ -236,31 +308,35 @@ class _CheckoutPageState extends State<CheckoutPage> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                "assets/image/nike.png",
+              child: Image.network(
+                data.url_image!,
                 width: MediaQuery.of(context).size.width * 0.2,
+                height: 60,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(
               width: 16,
             ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Sepatu Nike",
-                  style: TextStyle(
-                      fontFamily: "Segoe", fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  "1 x Rp1.000.000",
-                  style: TextStyle(
-                      fontFamily: "Segoe", fontWeight: FontWeight.w600),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.title!,
+                    style: TextStyle(
+                        fontFamily: "Segoe", fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "${data.quantity} x ${customMoneyFormatter(data.price!)}",
+                    style: TextStyle(
+                        fontFamily: "Segoe", fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -306,7 +382,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             fontWeight: FontWeight.bold,
                             fontFamily: "Segoe",
                           ),
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -390,11 +466,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
               const SizedBox(
                 height: 8,
               ),
-              Radio(
+              Radio<String>(
                 value: value,
                 groupValue: _selectedShipping,
                 onChanged: (newValue) {
-                  // Tambahkan tipe data String?
                   setState(() {
                     _selectedShipping = newValue;
                     _selectedPriceShipping = priceShipping;
@@ -444,16 +519,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
           Row(
             children: [
-              Radio(
+              Radio<String>(
                 value: value,
                 groupValue: _selectedPayment,
                 onChanged: (newValue) {
-                  // Tambahkan tipe data String?
-                  setState(
-                    () {
-                      _selectedPayment = newValue;
-                    },
-                  );
+                  setState(() {
+                    _selectedPayment = newValue;
+                  });
                 },
               ),
             ],

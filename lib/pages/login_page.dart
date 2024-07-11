@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: password,
                           isConfirmPassword: false,
                           errorMessage: 'Password tidak boleh kosong',
+                          suffixIcon: Icon(Icons.remove_red_eye),
                         ),
                       ],
                     ),

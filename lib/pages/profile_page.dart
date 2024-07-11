@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glamify/components/profile_menu_item.dart';
 import 'package:glamify/pages/login_page.dart';
-import 'package:glamify/provider/auth_provider_hive.dart';
-import 'dart:math';
+import 'package:glamify/providers/auth_provider_hive.dart';
 
 import 'package:glamify/services/auth/auth_services.dart';
 import 'package:provider/provider.dart';
@@ -46,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     AuthProviderHive authProviderHive =
         Provider.of<AuthProviderHive>(context, listen: false);
+    final userData = authProviderHive.authCredential;
 
     return SafeArea(
       child: Column(
@@ -70,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                _profileBio(),
+                _profileBio(userData),
                 const SizedBox(
                   height: 32,
                 ),
@@ -161,7 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _profileBio() {
+  Widget _profileBio(userData) {
     return Row(
       children: [
         ClipRRect(
@@ -175,25 +175,28 @@ class _ProfilePageState extends State<ProfilePage> {
         const SizedBox(
           width: 16,
         ),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Irvan Yusuf Cahyadi",
-              style: TextStyle(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                userData['username'],
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: "Segoe",
                   fontWeight: FontWeight.bold,
-                  color: Color(0xff323031)),
-            ),
-            Text(
-              "irvan@gmail.com",
-              style: TextStyle(
-                  fontFamily: "Segoe",
-                  color: Color(0xff8E8E8E),
-                  fontWeight: FontWeight.w600),
-            )
-          ],
+                  color: Color(0xff323031),
+                ),
+              ),
+              Text(
+                userData['email'],
+                style: const TextStyle(
+                    fontFamily: "Segoe",
+                    color: Color(0xff8E8E8E),
+                    fontWeight: FontWeight.w600),
+              )
+            ],
+          ),
         ),
       ],
     );

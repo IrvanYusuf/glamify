@@ -1,8 +1,8 @@
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter/material.dart';
 
-void toast(context) {
-  showToast("Berhasil Tambah Ke Keranjang",
+void toast(context,message) {
+  showToast(message,
       backgroundColor: Color.fromARGB(255, 49, 150, 48),
       context: context,
       axis: Axis.horizontal,

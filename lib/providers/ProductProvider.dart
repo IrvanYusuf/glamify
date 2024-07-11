@@ -7,12 +7,22 @@ class ProductProvider {
 
   Future<List<ProductModel>> fetchProducts() async {
     final response = await http.get(Uri.parse(_baseUrl));
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
-      return jsonData.map((product) => ProductModel.fromJson(product)).toList();
-    } else {
-      throw Exception('Failed to load products');
+    try {
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = jsonDecode(response.body);
+        print(
+            "data home json: ${jsonData.map((elemen) => elemen['id']).toList()}");
+        List<ProductModel> results =
+            jsonData.map((product) => ProductModel.fromJson(product)).toList();
+        print("data home: ${results}");
+        return jsonData
+            .map((product) => ProductModel.fromJson(product))
+            .toList();
+      } else {
+        throw Exception('Failed to load products');
+      }
+    } catch (e) {
+      throw Exception('error: ${e.toString()}');
     }
   }
 
@@ -31,7 +41,6 @@ class ProductProvider {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
-      print(jsonData);
       return jsonData.map((product) => ProductModel.fromJson(product)).toList();
     } else {
       throw Exception('Failed to load product');
@@ -75,6 +84,7 @@ class ProductProvider {
     try {
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
+        data.insert(0, "All");
         print(data);
         return data;
       }

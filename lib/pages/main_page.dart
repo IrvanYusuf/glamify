@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glamify/pages/cart_page.dart';
 import 'package:glamify/pages/checkout_page.dart';
-import 'package:glamify/pages/detail_product_page.dart';
 import 'package:glamify/pages/home_page.dart';
 import 'package:glamify/pages/login_page.dart';
 import 'package:glamify/pages/notification_page.dart';
 import 'package:glamify/pages/order_confirmation_page.dart';
 import 'package:glamify/pages/profile_page.dart';
-import 'package:glamify/pages/search_page.dart';
 import 'package:glamify/pages/wallet_page.dart';
+import 'package:glamify/providers/auth_provider_hive.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -20,6 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  late String userId;
 
   void _onTap(int index) {
     setState(() {
@@ -34,7 +35,20 @@ class _MainPageState extends State<MainPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Ambil data dari AuthProviderHive
+    final authProviderHive =
+        Provider.of<AuthProviderHive>(context, listen: false);
+    final userData = authProviderHive.authCredential;
+    userId = userData['uid'];
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // AuthProviderHive authProviderHive =
+    //     Provider.of<AuthProviderHive>(context, listen: false);
+    // final userData = authProviderHive.authCredential;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: StreamBuilder<User?>(
@@ -91,12 +105,11 @@ class _MainPageState extends State<MainPage> {
       routes: {
         '/home': (context) => const MainPage(),
         '/notification': (context) => const NotificationPage(),
-        // '/detail-product': (context) => const DetailProductPage(
-        //       id: 8,
-        //     ),
         // '/search': (context) => const SearchPage(),
-        '/cart': (context) => const CartPage(),
-        '/checkout': (context) => const CheckoutPage(),
+        '/cart': (context) => CartPage(
+              idUser: userId,
+            ),
+        '/checkout': (context) => CheckoutPage(idUser: userId),
         "/order-confirmation": (context) => const OrderConfirmationPage(),
       },
     );

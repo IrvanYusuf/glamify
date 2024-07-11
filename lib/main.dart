@@ -2,7 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:glamify/firebase_options.dart';
 import 'package:glamify/pages/login_page.dart';
-import 'package:glamify/provider/auth_provider_hive.dart';
+import 'package:glamify/providers/auth_provider_hive.dart';
+import 'package:glamify/providers/cart_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -11,11 +12,12 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("authBox");
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp( MultiProvider(
+      options: DefaultFirebaseOptions.currentPlatform,
+      );
+  runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => AuthProviderHive())
+      ChangeNotifierProvider(create: (context) => AuthProviderHive()),
+      ChangeNotifierProvider(create: (context) => CartProvider()),
     ],
     child: const MainApp(),
   ));
